@@ -12,7 +12,7 @@ COBRA can be used for multiple tasks in computational biology, including batch c
 
 In ```netbooks``` we provide a simple tutorial to show how to use COBRA in different applications. Check-out the [R Version](https://github.com/netZoo/netbooks/blob/main/netbooks/netZooR/COBRA.ipynb) and [Python Version](https://github.com/netZoo/netbooks/blob/main/netbooks/netZooPy/cobra.ipynb). For an interactive playground [click here](http://netbooks.networkmedicine.org/hub/login)!
 
-COBRA is part of the [Network Zoo](https://netzoo.github.io/), and the source code is available both in and [netZooR]() and [netZooPy](https://github.com/netZoo/netZooPy/blob/master/netZooPy/cobra/cobra.py).
+COBRA is part of the [Network Zoo](https://netzoo.github.io/), and the source code is available both in and [netZooR](https://github.com/netZoo/netZooR) and [netZooPy](https://github.com/netZoo/netZooPy).
 
 ## Structure of the repo
 
