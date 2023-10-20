@@ -17,8 +17,8 @@ COBRA is part of the [Network Zoo](https://netzoo.github.io/), and the source co
 ## Structure of the repo
 
 - ```./data``` contains the data used and generated in the experiments. Note that the version on GitHub does **not** contain all the data. Please download them from [Zenodo](https://zenodo.org/record/7852640#.ZEKfV5FBxkg). 
-- ```./experiments``` contains the source code to reproduce our experiments.
-- ```./figures``` are the output figures from the experiments.
+- ```experiments``` contains the source code to reproduce our experiments.
+- ```figures``` are the output figures from the experiments.
 
 ## Appreciation
 - Marieke Kuijjer for the assistance in the ENCODE data pipeline. 
