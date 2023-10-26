@@ -12,21 +12,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 setwd("/home/soel/Desktop/cobra/")
-library("cluster")
-library("clusterProfiler")
-library("data.table")
-library('DESeq2')
-library("fastDummies")
-library("flashClust")
-library("recount3")
-library("WGCNA")
-library(GOstats)
-library(org.Hs.eg.db)
 library(AnnotationDbi)
-library(KEGGandMetacoreDzPathwaysGEO)
+library(cluster)
+library(clusterProfiler)
+library(data.table)
+library(DESeq2)
+library(fastDummies)
 library(fgsea)
 library(ggplot2)
-source('./algorithm.R')
+library(GOstats)
+library(KEGGandMetacoreDzPathwaysGEO)
+library(org.Hs.eg.db)
+library(netZooR)
+library(recount3)
+library(reticulate)
 
 # Extracting data from TCGA
 data <- recount3::create_rse_manual(
@@ -60,8 +59,8 @@ nat <- metadata$tcga.gdc_cases.samples.sample_type
 nat <- ifelse(nat == "Solid Tissue Normal", 0, 1)
 
 X <- cbind(rep(1, dim(G)[2]), nat, sex == 'female', age, as.matrix(dummy_cols(race)[-1]), as.matrix(dummy_cols(stage)[-1]), as.matrix(dummy_cols(batch)[-1]))
-cobra <- themethod(X, vsd, absolute = F, eigen_function = eigs_sym)
-Sigma_D <- cobra$Q %*% diag(cobra$estimates[2,]) %*% t(cobra$Q)
+cobra <- cobra(X, vsd)
+Sigma_D <- cobra$Q %*% diag(cobra$psi[2,]) %*% t(cobra$Q)
 rownames(Sigma_D) <- rownames(vsd)
 colnames(Sigma_D) <- rownames(vsd)
 ```
@@ -72,8 +71,8 @@ import numpy as np
 import pandas as pd
 Sigma_D = r.Sigma_D
 cache=True
-ppi = pd.read_csv("tissues_ppi.txt", sep = '\t', header = None)
-motif = pd.read_csv("tissues_motif.txt", sep = '\t', header = None)
+ppi = pd.read_csv("data/thca/panda_cobra/tissues_ppi.txt", sep = '\t', header = None)
+motif = pd.read_csv("data/thca/panda_cobra/tissues_motif.txt", sep = '\t', header = None)
 motif_filter = motif[motif[2] != 0]
 
 gene_map = {}
