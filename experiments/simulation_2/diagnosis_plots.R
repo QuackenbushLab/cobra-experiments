@@ -34,7 +34,7 @@ diagnosticPlots <- function(differentialCorrelationsDF, path){
     naiveDensity <- ggplot(differentialCorrelationsDF) + 
         geom_density(aes(naiveMeth, group=factor(labels), color=factor(labels), fill=factor(labels)), alpha=0.3) + 
         theme_bw(base_size = 60) + theme(legend.title=element_text(size=30), legend.text=element_text(size=30)) +
-        ggtitle("Naive Method") + xlab("Absolute Pairwise Differential Coexpression") +
+        ggtitle("Naive Method") + xlab("Pairwise Differential Coexpression") +
         guides(fill=guide_legend(title="True Interaction", keyheight=1, keywidth=1, default.unit="inch"), color=F) + 
         scale_colour_manual(values=cbPalette) + scale_fill_manual(values=cbPalette)
     naiveWBatchDensity <- ggplot(differentialCorrelationsDF) + 
