@@ -20,22 +20,6 @@ library(recount3)
 library(r2r)
 library(WGCNA)
 
-algo <- function(X, coexpr, N, eigen_function=eigs_sym){
-  start <- Sys.time()
-  eigenG <- eigen_function(coexpr,N)
-  Q <- eigenG$vectors
-  D <- diag(eigenG$values)
-  hatmat <- ginv(crossprod(X))%*%t(X)
-  Qinv <- ginv(Q)
-  QinvG <- Qinv%*%(G)
-  
-  est <- t(sapply(seq_len(nrow(hatmat)), function(hatmatRow){
-    diag(QinvG%*%(N*diag(hatmat[hatmatRow,]))%*%t(QinvG))
-  }))
-  print(paste("Computation performed in",round(as.numeric(difftime(Sys.time(), start,units = "secs")),1), "seconds"))
-  list(estimates=est, Q=Q, D=eigenG$values, G=G)
-}
-
 # Extracting data from TCGA
 data <- recount3::create_rse_manual(
   project = "THCA",
@@ -66,10 +50,9 @@ age <- metadata$tcga.cgc_case_age_at_diagnosis
 cancer <- metadata$tcga.gdc_cases.samples.sample_type
 cancer <- ifelse(cancer == "Solid Tissue Normal", 0, 1)
 
-pcor <- pcor.shrink(t(vsd))
 X <- cbind(rep(1, dim(G)[2]), cancer, sex == 'female', age, as.matrix(dummy_cols(race)[-1]), as.matrix(dummy_cols(stage)[-1]), as.matrix(dummy_cols(batch)[-1]))
-cobra <- algo(X, matrix(as.numeric(pcor), dim(pcor)[1], dim(pcor)[2]), dim(vsd)[2], eigen_function = eigs_sym)
-Sigma_D <- abs(cobra$Q %*% diag(cobra$estimates[2,]) %*% t(cobra$Q))
+cobra_res <- cobra(X, vsd, method = "pcorsh")
+Sigma_D <- abs(cobra_res$Q %*% diag(cobra_res$psi[2,]) %*% t(cobra_res$Q))
 rownames(Sigma_D) <- rownames(vsd)
 colnames(Sigma_D) <- rownames(vsd)
 
