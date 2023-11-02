@@ -33,6 +33,10 @@ output_combat <- topTable(fit_combat, coef = 2,n=Inf)
 sum(output$adj.P.Val<.01)
 sum(output_combat$adj.P.Val<.01)
 
+topNgenes <- 1000
+expr <- expr[order(-apply(expr,1,var))[seq_len(topNgenes)],]
+expr_limma <- removeBatchEffect(expr, yaleBatch)
+
 negative_controls <- c()
 for(i in seq_len(30)){
   idx <- i * 2
@@ -43,8 +47,7 @@ RUV <- t(RUVNaiveRidge(t(expr), center=FALSE, negative_controls, nu = 5, kW = 50
 expr_combat = ComBat(dat=expr, batch=yaleBatch, par.prior=TRUE, prior.plots=FALSE)
 
 B1 <- 10
-B2 <- 10
-topNgenes <- dim(expr)[1]
+B2 <- 1000
 compute <- function(E){
   res <- c()
   for(rep in seq_len(B1)){
@@ -61,7 +64,7 @@ compute <- function(E){
       Sigma2 <- Sigma2 + coex2
     }
     res <- c(res, ks.test(Sigma1, Sigma2)$statistic)
-    print(ks.test(Sigma1, Sigma2)$statistic)
+    print(ks.test(Sigma1, Sigma2))
   }
   return(res)
 }
@@ -86,7 +89,7 @@ for(rep in seq_len(B1)){
     Sigma2 <- Sigma2 + coex2
   }
   stat_cobra <- c(stat_cobra, ks.test(Sigma1, Sigma2)$statistic)
-  print(ks.test(Sigma1, Sigma2)$statistic)
+  print(ks.test(Sigma1, Sigma2))
 }
 
 stat_sva <- c()
@@ -94,7 +97,6 @@ for(rep in seq_len(B1)){
   Sigma1 <- matrix(0, nrow = topNgenes, ncol = topNgenes)
   Sigma2 <- matrix(0, nrow = topNgenes, ncol = topNgenes)
   for(B in seq_len(B2)){
-    print(B)
     group1 <- sample(c(rep(T, 32), rep(F, 31)))
     group1 <- c(cbind(group1, !group1))
     X <- cbind(rep(1, dim(expr)[2]), group1, yaleBatch)
@@ -112,7 +114,7 @@ for(rep in seq_len(B1)){
     Sigma2 <- Sigma2 + pc_diff2
   }
   stat_sva <- c(stat_sva, ks.test(Sigma1, Sigma2)$statistic)
-  print(ks.test(Sigma1, Sigma2)$statistic)
+  print(ks.test(Sigma1, Sigma2))
 }
 
 stat <- t(compute(expr))
@@ -136,6 +138,24 @@ boxplot(val ~ group,
 )
 dev.off()
 
+expr <- read.csv(paste0(local,"rnaseq_filtered_med0genes.txt"), sep = "\t")
+expr <- expr[,!grepl(pattern = "_2", colnames(expr))]
+yaleBatch <- grepl(pattern = "yale",colnames(expr))
+yale <- expr[, yaleBatch]
+argonne <- expr[,!yaleBatch]
+expr <- cbind(yale, argonne)
+yaleBatch = c(rep(T, 63), rep(F, 63))
+
+expr_limma <- removeBatchEffect(expr, yaleBatch)
+negative_controls <- c()
+for(i in seq_len(30)){
+  idx <- i * 2
+  tmp <- rownames(which(abs(cor(t(expr))) == as.numeric(sort(unlist(as.list(abs(cor(t(expr))))))[idx]), arr.ind = TRUE))
+  negative_controls <- c(negative_controls, tmp[1], tmp[2])
+}
+RUV <- t(RUVNaiveRidge(t(expr), center=FALSE, negative_controls, nu = 5, kW = 50))
+expr_combat = ComBat(dat=expr, batch=yaleBatch, par.prior=TRUE, prior.plots=FALSE)
+
 experiment <- function(group){
   G <- c(cbind(group, !group))
   naive_diff <- cor(t(expr[,G])) - cor(t(expr[,!G]))
@@ -144,14 +164,17 @@ experiment <- function(group){
   res <- cobra(X, expr)
   cobra_diff <- res$Q %*% diag(res$psi[2,]) %*% t(res$Q)
   ruv_diff <- cor(t(RUV[,G])) - cor(t(expr[,!G]))
-  nsv=num.sv(expr,X, method = "be")
   pc_corrected = t(sva_network(t(expr), nsv))
   pc_diff <- cor(t(pc_corrected[,G])) - cor(t(pc_corrected[,!G]))
   combat_diff <- cor(t(expr_combat[,G])) - cor(t(expr_combat[,!G]))
+  limma_diff <- naive_diff
+  ruv_diff <- naive_diff
+  pc_diff <- naive_diff
+  combat_diff <- naive_diff
   return(c(mean(naive_diff^2), mean(limma_diff^2), mean(cobra_diff^2), mean(ruv_diff^2), mean(pc_diff^2), mean(combat_diff^2)))
 }
 
-B <- 100
+B <- 10
 
 naive_res <- matrix(0, nrow = B, ncol = 9)
 limma_res <- matrix(0, nrow = B, ncol = 9)
@@ -163,6 +186,7 @@ P <- c(0, 8, 16, 24, 32, 39, 47, 55, 63)
 for(p in seq_len(length(P))){
   print(p)
   for(i in seq_len(B)){
+    print(i)
     group <- sample(c(rep(T, P[p]), rep(F, 63-P[p])))
     res <- experiment(group)
     naive_res[i, p] <- res[1]
