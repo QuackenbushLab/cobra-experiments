@@ -167,10 +167,6 @@ experiment <- function(group){
   pc_corrected = t(sva_network(t(expr), nsv))
   pc_diff <- cor(t(pc_corrected[,G])) - cor(t(pc_corrected[,!G]))
   combat_diff <- cor(t(expr_combat[,G])) - cor(t(expr_combat[,!G]))
-  limma_diff <- naive_diff
-  ruv_diff <- naive_diff
-  pc_diff <- naive_diff
-  combat_diff <- naive_diff
   return(c(mean(naive_diff^2), mean(limma_diff^2), mean(cobra_diff^2), mean(ruv_diff^2), mean(pc_diff^2), mean(combat_diff^2)))
 }
 
