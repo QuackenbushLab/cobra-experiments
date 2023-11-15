@@ -22,7 +22,7 @@ COBRA is part of the [Network Zoo](https://netzoo.github.io/), and the source co
 
 ## Appreciation
 - Marieke Kuijjer for the assistance in the ENCODE data pipeline. 
-- Rebekka Burkholz, Chen Chen, Derrick DeConti, Dawn DeMeo, Viola Fanfani, Jonas Fischer, Intekhab Hossain, Camila Lopes-Ramos, Panagiotis Mandros, John Quackenbush, Enakshi Saha, and Katherine Shutta for thoughtful critiques and discussions.
+- Anahita Babaie, Rebekka Burkholz, Chen Chen, Derrick DeConti, Dawn DeMeo, Viola Fanfani, Jonas Fischer, Intekhab Hossain, Camila Lopes-Ramos, Panagiotis Mandros, John Quackenbush, Enakshi Saha, and Katherine Shutta for thoughtful critiques and discussions.
 
 ## Citation
-If you find COBRA useful, star this repository and cite us
+If you find COBRA useful, star this repository!
