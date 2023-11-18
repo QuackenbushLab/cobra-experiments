@@ -15,7 +15,7 @@ COBRA is part of the [Network Zoo](https://netzoo.github.io/), and the source co
 
 ## Minimal examples
 
-## Usage
+### Python
 
 ```python
 from netZooPy.cobra import *
@@ -31,7 +31,29 @@ expression = np.random.random((G, n))
 X = np.vstack(([1 for i in range(n)], np.random.rand(n))).T # The first column of X is an intercept
 
 # Run COBRA
-psi, Q, d, g = cobra(X, gene_expression)
+psi, Q, d, g = cobra(X, expression)
+```
+
+### R
+
+```r
+library(netZooR)
+
+# Generate toy data
+G <- 1000 # Genes
+n <- 100 # Samples (e.g. individuals)
+q <- 2 # Covariates in the design matrix
+
+# expression of size (G, n); design matrix of size (G, q)
+expression <- matrix(runif(G * n), nrow = G)
+X <- cbind(rep(1, n), runif(n)) # The first column of X is an intercept
+
+# Run COBRA
+cobra_obj <- cobra(X, estimates)
+
+# Extract matrix Q and covariate-specific eigenvalues psi
+Q <- cobra_obj$Q
+psi <- cobra_obj$psi
 ```
 
 ## Structure of the repo
