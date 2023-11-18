@@ -7,16 +7,36 @@ COBRA can be used for multiple tasks in computational biology, including batch c
 
 <img align="center" width="100%" src="cobra.png">
 
-
 ## Usage
 
 In ```netbooks``` we provide a simple tutorial to show how to use COBRA in different applications. Check-out the [R Version](https://github.com/netZoo/netbooks/blob/main/netbooks/netZooR/COBRA.ipynb) and [Python Version](https://github.com/netZoo/netbooks/blob/main/netbooks/netZooPy/cobra.ipynb). For an interactive playground [click here](http://netbooks.networkmedicine.org/hub/login)!
 
 COBRA is part of the [Network Zoo](https://netzoo.github.io/), and the source code is available both in and [netZooR](https://github.com/netZoo/netZooR) and [netZooPy](https://github.com/netZoo/netZooPy).
 
+## Minimal examples
+
+## Usage
+
+```python
+from netZooPy.cobra import *
+import numpy as np
+
+# Generate toy data
+G = 1000 # Genes
+n = 100 # Samples (e.g. individuals)
+q = 2 # Covariates in the design matrix
+
+# expression of size (G, n); design matrix of size (G, q)
+expression = np.random.random((G, n))
+X = np.vstack(([1 for i in range(n)], np.random.rand(n))).T # The first column of X is an intercept
+
+# Run COBRA
+psi, Q, d, g = cobra(X, gene_expression)
+```
+
 ## Structure of the repo
 
-- ```data``` contains the data used and generated in the experiments. Note that the version on GitHub does **not** contain all the data. Please download them from [Zenodo](https://zenodo.org/record/7852640#.ZEKfV5FBxkg). 
+- ```data``` contains the data used and generated in the experiments. Note that the version on GitHub does **not** contain all the data. Please download them from [Zenodo](https://zenodo.org/records/10154758). 
 - ```experiments``` contains the source code to reproduce our experiments.
 - ```figures``` are the output figures from the experiments.
 
