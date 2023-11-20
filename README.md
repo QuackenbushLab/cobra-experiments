@@ -1,4 +1,4 @@
-# COBRA: Higher-order batch correction to preserve network correlation
+# COBRA: High-order correction of persistent batch effects in correlation networks
 
 Given a gene (co-)expression matrix and a design matrix, COBRA returns a decomposition of the covariance as a linear combination of components, one for each variable in the design matrix. 
 
