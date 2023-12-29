@@ -2,7 +2,7 @@
 
 Given a gene (co-)expression matrix and a design matrix, COBRA returns a decomposition of the covariance as a linear combination of components, one for each variable in the design matrix. 
 
-COBRA can be used for multiple tasks in computational biology, including batch correction in the covariance space, differential co-expression analysis, and understanding the impact of variables of interest - such as confounders - on the observed co-expression. In particular, it is an effective pre-processing step for gene regulatory networks inference and various studies. 
+COBRA can be applied for batch correction, covariate-specific co-expression analysis, and to study the effect of various parameters on the observed patterns of co-expression. 
 
 
 <img align="center" width="100%" src="cobra.png">
