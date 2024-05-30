@@ -1,4 +1,5 @@
-#
+# A big portion of this code has been taken from https://github.com/skinnider/SCT-MoA, which allows to reproduce the experiments in 
+# "Evaluating measures of association for single-cell transcriptomics" by Skinnider et al. 
 setwd("/Users/soel/Documents/cobra-experiments/experiments/thca/egad")
 options(stringsAsFactors = F)
 library(MASS)
