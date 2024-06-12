@@ -166,7 +166,7 @@ plotROC <- function(corrDF, positive, plottitle="Title"){
   lines(roc.methodPred.sva@x.values[[1]], roc.methodPred.sva@y.values[[1]], col = "darkgreen", lwd=3)
   lines(roc.methodPred.ruv@x.values[[1]], roc.methodPred.ruv@y.values[[1]], col = "gray", lwd=3)
   
-  legend("bottomright", c(paste("Our Method",round(auc.methodPred,4)), 
+  legend("bottomright", c(paste("COBRA",round(auc.methodPred,4)), 
                           paste("Naive",round(auc.methodPred.naive,4)), 
                           paste("Naive Batch",round(auc.methodPred.naive.w.batch,4)),
                           paste("Limma",round(auc.methodPred.limma,4)),
