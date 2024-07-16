@@ -7,10 +7,11 @@ library(limma)
 library(netZooR)
 library(RUVcorr)
 library(sva)
+library(glue)
 
 ## Imports
 
-setwd("/home/soel/cobra/") # Put your local path here
+setwd("/Users/soel/Documents/cobra-experiments/") # Put your local path here
 source('./experiments/simulation_2/diagnosis_plots.R')
 source('./experiments/simulation_2/simulateData.R')
 source('./experiments/simulation_2/generateMasterDF.R')
@@ -54,19 +55,43 @@ png(paste0(path,'/coex_heatmap.png'), width = 1600, height = 1200)
 heatmap.2(coex[c(T,F,F,F),c(T,F,F,F)], Rowv = F, Colv = F, trace = "none", 
           labRow=trueGeneLabels[c(T,F,F,F)], col="bluered", dendrogram = "none", RowSideColors = cbPalette[as.factor(trueGeneLabels[c(T,F,F,F)])])
 dev.off()
+
+start.time <- Sys.time()
 insilico_result <- cobra(X, study$data)
+print(paste("COBRA in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
+start.time <- Sys.time()
 differentialCorrelationNaive <- cor(t(insilico_result$G[,caseControl==1]))-cor(t(insilico_result$G[,caseControl==0]))
+print(paste("Naive in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
+start.time <- Sys.time()
 differentialCorrelationNaivewBatch <- 
   (cor(t(insilico_result$G[,caseControl==1&batches==1]))-cor(t(insilico_result$G[,caseControl==0&batches==1])) +
      cor(t(insilico_result$G[,caseControl==1&batches==0]))-cor(t(insilico_result$G[,caseControl==0&batches==0])))/2
+print(paste("Naive with batch in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
+start.time <- Sys.time()
 expr_limma <- removeBatchEffect(insilico_result$G, batches==1)
 limma <- cor(t(expr_limma[,caseControl == 1])) - cor(t(expr_limma[,caseControl == 0]))
+print(paste("Limma in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
+start.time <- Sys.time()
 RUV <- t(RUVNaiveRidge(t(insilico_result$G), center=FALSE, seq_len(numGenes)[trueGeneLabels == "Background"], nu = 5, kW = 50))
+RUV <- cor(t(RUV[,caseControl == 1])) - cor(t(RUV[,caseControl == 0]))
+print(paste("RUVCorr in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
+start.time <- Sys.time()
 expr_combat = ComBat(dat=insilico_result$G, batch=(batches==1), par.prior=TRUE, prior.plots=FALSE)
 combat <- cor(t(expr_combat[,caseControl == 1])) - cor(t(expr_combat[,caseControl == 0]))
+print(paste("ComBat in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
+
+start.time <- Sys.time()
 nsv=num.sv(study$data,cbind(rep(1,numSamples),batches), method = "be")
 pc_corrected = t(sva_network(t(study$data), 250))
 sva <- cor(t(pc_corrected[,batches == 1])) - cor(t(pc_corrected[,batches == 0]))
+print(paste("SVA in ",round(as.numeric(difftime(Sys.time(), start.time,units = "secs")),1), "seconds"))
+
 insilico_MasterDF <- generateMasterDF(insilico_result, differentialCorrelationNaive, differentialCorrelationNaivewBatch, combat, limma, sva, RUV, truePairwiseLabels, maxPoints=800000)
 
 plotEigenvectors(insilico_result, 
