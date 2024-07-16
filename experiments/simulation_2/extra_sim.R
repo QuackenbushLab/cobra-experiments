@@ -171,9 +171,9 @@ plotROC <- function(corrDF, positive, plottitle="Title"){
                           paste("Naive Batch",round(auc.methodPred.naive.w.batch,4)),
                           paste("Limma",round(auc.methodPred.limma,4)),
                           paste("ComBat",round(auc.methodPred.combat,4)),
-                          paste("SVA",round(auc.methodPred.sva,4))),
-                          # paste("RUVCorr",round(auc.methodPred.ruv,4))),
-         lty=1,lwd=1,col=c("red", "green", "blue", "pink", "purple", "darkgreen"),title="Area under ROC curve")
+                          paste("SVA",round(auc.methodPred.sva,4)),
+                          paste("RUVCorr",round(auc.methodPred.ruv,4))),
+         lty=1,lwd=1,col=c("red", "green", "blue", "pink", "purple", "darkgreen", "gray"),title="Area under ROC curve")
   abline(0,1)
 }
 unique(differentialCorrelationsDF$labels)
