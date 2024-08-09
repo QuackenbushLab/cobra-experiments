@@ -1,6 +1,5 @@
 .idea/
 .ipynb_checkpoints/
 .Rhistory
-.RData
 data/
 .DS_Store
