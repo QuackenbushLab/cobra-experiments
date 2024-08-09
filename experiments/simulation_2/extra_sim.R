@@ -12,9 +12,9 @@ library(sva)
 
 #setwd("/Users/soel/Documents/cobra-experiments/") # Put your local path here
 ## Basic setup
-
+sessionInfo <- sessionInfo()
 seed <- sample(10000,1)
-set.seed(5620)
+set.seed(seed) # use seed 4956 to reproduce Figure S1
 numGenes <- 4000 
 numSamples <-400
 addedError <- 8
@@ -200,3 +200,6 @@ methodPred  <- prediction(abs(differentialCorrelationsDF$newMeth), differentialC
 roc.methodPred  <- performance(methodPred, measure = c("tpr"), x.measure = "fpr")
 auc.methodPred  <- performance(methodPred, "auc")@y.values[[1]]
 print(auc.methodPred)
+
+# remove large objects to enable GitHub saving
+rm(list=c("batchMat", "cobra_corrected", "combat", "correlationNaive", "correlationNaivewBatch", "differentialCorrelationsDF", "insilico_MasterDF", "limma", "methodPred", "onlyEffects", "realMat", "roc.methodPred", "RUV", "SigmaBatch1", "SigmaBatch2", "Sigmas", "sva", "data", "expr_combat", "expr_limma", "pc_corrected", "insilico_result"))

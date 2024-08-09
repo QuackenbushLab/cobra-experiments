@@ -17,10 +17,9 @@ source('./experiments/simulation_2/simulateData.R')
 source('./experiments/simulation_2/generateMasterDF.R')
 
 ## Basic setup
-
-
+sessionInfo <- sessionInfo()
 seed <- sample(10000,1)
-set.seed(5620)
+set.seed(seed) # use seed 1095 to reproduce Figure 2
 numGenes <- 4000 
 numSamples <-400
 addedError <- 8
@@ -102,3 +101,5 @@ mean(abs(insilico_MasterDF$newMeth[insilico_MasterDF$labels=="Real effect"]))
 mean(abs(insilico_MasterDF$newMeth[insilico_MasterDF$labels=="Batch effect"]))
 
 diagnosticPlots(insilico_MasterDF, path)
+# remove large objects to enable GitHub saving
+rm(list=c("coex", "differentialCorrelationNaive", "differentialCorrelationNaivewBatch", "truePairwiseLabels", "batchMat", "cobra_corrected", "combat", "correlationNaive", "correlationNaivewBatch", "differentialCorrelationsDF", "insilico_MasterDF", "limma", "methodPred", "onlyEffects", "realMat", "roc.methodPred", "RUV", "SigmaBatch1", "SigmaBatch2", "Sigmas", "sva", "data", "expr_combat", "expr_limma", "pc_corrected", "insilico_result"))
